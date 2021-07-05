@@ -8,7 +8,7 @@ import { AddStudentComponent } from './add-student/add-student.component';
 import { EditStudentComponent } from './edit-student/edit-student.component';
 import { StudentListComponent } from './student-list/student-list.component';
 
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Import Firebase modules + environment
 import { AngularFireModule } from '@angular/fire';
@@ -40,7 +40,8 @@ import { BulkupdateComponent } from './bulkupdate/bulkupdate.component';
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

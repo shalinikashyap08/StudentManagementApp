@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudService } from '../shared/crud.service';
-import { Student } from './../shared/student'; 
+import { StudentFrontend } from './../shared/student'; 
 import { ToastrService } from 'ngx-toastr';
 
 
@@ -13,11 +13,13 @@ import * as XLSX from 'xlsx';
 
 export class StudentListComponent implements OnInit {
   p: number = 1;
-  Student: Student[];
+  Student: StudentFrontend[];
   hideWhenNoStudent: boolean = false;
   noData: boolean = false;
   preLoader: boolean = true;
   
+  masterSelected:boolean;
+  checkedList:any;
 
   constructor(
     public crudApi: CrudService,
@@ -26,6 +28,7 @@ export class StudentListComponent implements OnInit {
 
 
   ngOnInit() {
+    this.masterSelected=false;
     this.dataState();
     let s = this.crudApi.GetStudentsList(); 
     s.snapshotChanges().subscribe(data => {
@@ -33,7 +36,9 @@ export class StudentListComponent implements OnInit {
       data.forEach(item => {
         let a = item.payload.toJSON(); 
         a['$key'] = item.key;
-        this.Student.push(a as Student);
+        a['isSelected']=false;
+        this.Student.push(a as StudentFrontend);
+        console.log(a);
       })
     })
   }
@@ -64,4 +69,30 @@ export class StudentListComponent implements OnInit {
     let wb = XLSX.utils.table_to_book(tbl);
     XLSX.writeFile(wb, "student_data" + '.xlsx');
   }
+
+  checkUncheckAll() {
+    for (var i = 0; i < this.Student.length; i++) {
+      this.Student[i].isSelected = this.masterSelected;
+    }
+    this.getCheckedItemList();
+  }
+  isAllSelected() {
+    this.masterSelected = this.Student.every(function(student:any) {
+        return student.isSelected == true;
+      })
+    this.getCheckedItemList();
+  }
+
+  getCheckedItemList(){
+    this.checkedList = [];
+    for (var i = 0; i < this.Student.length; i++) {
+      if(this.Student[i].isSelected)
+      this.checkedList.push(this.Student[i]);
+    }
+    this.checkedList = JSON.stringify(this.checkedList);
+    console.log(this.checkedList);
+  }
+
+  
+  
 }
